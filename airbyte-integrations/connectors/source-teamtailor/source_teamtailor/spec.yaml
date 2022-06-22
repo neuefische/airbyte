@@ -4,10 +4,17 @@ connectionSpecification:
   title: Teamtailor Spec
   type: object
   required:
-    - TODO
+    - access_token
   additionalProperties: false
   properties:
-    # 'TODO: This schema defines the configuration required for the source. This usually involves metadata such as database and/or authentication information.':
-    TODO:
+    access_token:
       type: string
-      description: describe me
+      description: >-
+        Access token to connect to Teamtailor. 
+        See https://docs.teamtailor.com/#authentication
+      airbyte_secret: true
+    api_version:
+      type: string
+      description: >-
+        API version. 
+        See https://docs.teamtailor.com/#versioning 

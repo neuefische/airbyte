@@ -1,0 +1,120 @@
+{
+	"type": "object",
+	"required": [],
+	"properties": {
+		"data": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": [],
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"links": {
+						"type": "object",
+						"required": [],
+						"properties": {
+							"self": {
+								"type": "string"
+							}
+						}
+					},
+					"attributes": {
+						"type": "object",
+						"required": [],
+						"properties": {
+							"name": {
+								"type": "string"
+							}
+						}
+					},
+					"relationships": {
+						"type": "object",
+						"required": [],
+						"properties": {
+							"roles": {
+								"type": "object",
+								"required": [],
+								"properties": {
+									"links": {
+										"type": "object",
+										"required": [],
+										"properties": {
+											"self": {
+												"type": "string"
+											},
+											"related": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							},
+							"teams": {
+								"type": "object",
+								"required": [],
+								"properties": {
+									"links": {
+										"type": "object",
+										"required": [],
+										"properties": {
+											"self": {
+												"type": "string"
+											},
+											"related": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"meta": {
+			"type": "object",
+			"required": [],
+			"properties": {
+				"texts": {
+					"type": "object",
+					"required": [],
+					"properties": {
+						"name-singular": {
+							"type": "string"
+						},
+						"name-plural": {
+							"type": "string"
+						},
+						"all": {
+							"type": "string"
+						}
+					}
+				},
+				"record-count": {
+					"type": "number"
+				},
+				"page-count": {
+					"type": "number"
+				}
+			}
+		},
+		"links": {
+			"type": "object",
+			"required": [],
+			"properties": {
+				"first": {
+					"type": "string"
+				},
+				"last": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

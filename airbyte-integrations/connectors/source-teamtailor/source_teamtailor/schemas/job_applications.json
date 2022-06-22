@@ -1,0 +1,19 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"id": "integer",
+		"cover-letter":["null", "string"],
+		"created-at": ["null", "string"],
+		"referring-site": ["null", "string"],
+		"referring-url": ["null", "string"],
+		"rejected-at": ["null", "string"],
+		"sourced": ["null", "bool"],
+		"updated-at": ["null", "string"],
+		"row-order": ["null", "integer"],
+		"changed-stage-at": ["null", "string"]
+	},
+	"required": [
+		"id"
+	]
+}
