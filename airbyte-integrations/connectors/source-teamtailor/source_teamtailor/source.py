@@ -71,4 +71,4 @@ class SourceTeamtailor(AbstractSource):
         # TODO remove the authenticator if not required.
         auth = TokenAuthenticator(auth_method="Token", token=config["access_token"])
         logging.info(f"Creating Teamtailor streams with config: {auth.auth_header}")
-        return [Locations(authenticator=auth), JobApplications(authenticator=auth)]
+        return [Locations(authenticator=auth), JobApplications(authenticator=auth), Candidates(authenticator=auth), Custom_field_values(authenticator=auth), Stages(authenticator=auth)]

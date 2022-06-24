@@ -1,0 +1,14 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"id": "integer",
+        "field-type": ["null", "string"],
+        "value": ["null", "string"]	
+	},
+	"required": [
+		"id"
+	]
+}
+
+
