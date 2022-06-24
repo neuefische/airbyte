@@ -12,29 +12,11 @@ from airbyte_cdk.sources.streams.http import HttpStream
 # Basic full refresh stream
 class TeamtailorStream(HttpStream, ABC):
     """
-    TODO remove this comment
-
     This class represents a stream output by the connector.
     This is an abstract base class meant to contain all the common functionality at the API level e.g: the API base URL, pagination strategy,
     parsing responses etc..
 
     Each stream should extend this class (or another abstract subclass of it) to specify behavior unique to that stream.
-
-    Typically for REST APIs each stream corresponds to a resource in the API. For example if the API
-    contains the endpoints
-    - GET v1/customers
-    - GET v1/employees
-
-    then you should have three classes:
-        `class TeamtailorStream(HttpStream, ABC)` which is the current class
-        `class Customers(TeamtailorStream)` contains behavior to pull data for customers using v1/customers
-        `class Employees(TeamtailorStream)` contains behavior to pull data for employees using v1/employees
-
-    If some streams implement incremental sync, it is typical to create another class
-    `class IncrementalTeamtailorStream((TeamtailorStream), ABC)` then have concrete stream implementations extend it. An example
-    is provided below.
-
-    See the reference docs for the full list of configurable options.
     """
 
     url_base = "https://api.teamtailor.com/v1/"
@@ -114,7 +96,7 @@ class JobApplications(TeamtailorStream):
 
 
 class Companies(TeamtailorStream):
-    """define how to load the data from the locations stream"""
+    """route for companies"""
 
     primary_key = "id"
     relations = ["manager"]
@@ -122,5 +104,56 @@ class Companies(TeamtailorStream):
     def path(
         self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> str:
-        """route for companies"""
+        """ """
         return "companies"
+
+
+class Candidates(TeamtailorStream):
+    """define how to load the data from the candidate stream"""
+
+    primary_key = "id"
+    relations = [
+        "activities",
+        "department",
+        "role",
+        "job-applications",
+        "questions",
+        "answers",
+        "locations",
+        "regions",
+        "uploads",
+        "custom-field-values",
+        "partner-results",
+    ]
+
+    def path(
+        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> str:
+        """ """
+        return "candidates"
+
+
+class CustomFieldValues(TeamtailorStream):
+    """define how to load the data from the candidate stream"""
+
+    primary_key = "id"
+    relations = ["custom_field", "owner"]
+
+    def path(
+        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> str:
+        """return path for custom field values"""
+        return "custom-field-values"
+
+
+class Stages(TeamtailorStream):
+    """define how to load the data from the candidate stream"""
+
+    primary_key = "id"
+    relations = ["job-applications", "job", "triggers"]
+
+    def path(
+        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> str:
+        """return path for stages"""
+        return "stages"

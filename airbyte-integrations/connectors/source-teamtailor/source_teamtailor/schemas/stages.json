@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"id": "integer",
+        "created-at": ["null", "string"],
+        "updated-at": ["null", "string"],
+        "name": ["null", "string"],
+        "stage-type": ["null", "string"],
+        "row-order": ["null", "string"],
+        "active-job-applications-count": ["null", "string"],
+        "rejected-job-applications-count": ["null", "string"]
+       
+	},
+	"required": [
+		"id"
+	]
+}
