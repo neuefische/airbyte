@@ -1,10 +1,13 @@
+#
+# Copyright (c) 2022 Airbyte, Inc., all rights reserved.
+#
 from abc import ABC
-from typing import Any, Iterable, List, Mapping, MutableMapping, Optional, Tuple
+from typing import Any, Iterable, Mapping, MutableMapping, Optional
+from urllib.parse import parse_qs, urlparse
 
-from airbyte_cdk.sources import config
-from airbyte_cdk.sources.streams.http import HttpStream
 import requests
-from urllib.parse import urlparse, parse_qs
+from airbyte_cdk.sources.streams.http import HttpStream
+
 
 # Basic full refresh stream
 class TeamtailorStream(HttpStream, ABC):
@@ -34,23 +37,13 @@ class TeamtailorStream(HttpStream, ABC):
     See the reference docs for the full list of configurable options.
     """
 
-    # TODO: Fill in the url base. Required.
     url_base = "https://api.teamtailor.com/v1/"
+    relations = []  # list of relations to be fetched by child classes
 
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
         """
-        TODO: Override this method to define a pagination strategy. If you will not be using pagination, no action is required - just return None.
-
-        This method should return a Mapping (e.g: dict) containing whatever information required to make paginated requests. This dict is passed
-        to most other methods in this class to help you form headers, request bodies, query params, etc..
-
-        For example, if the API accepts a 'page' parameter to determine which page of the result to return, and a response from the API contains a
-        'page' number, then this method should probably return a dict {'page': response.json()['page'] + 1} to increment the page count by 1.
-        The request_params method should then read the input next_page_token and set the 'page' param to next_page_token['page'].
-
         :param response: the most recent response from the API
-        :return If there is another page in the result, a mapping (e.g: dict) containing information needed to query the next page in the response.
-        If there are no more pages in the result, return None.
+        :return the next page token if there is one, None otherwise
         """
         decoded_response = response.json()
         next_page = decoded_response["links"].get("next", False)
@@ -62,16 +55,19 @@ class TeamtailorStream(HttpStream, ABC):
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> MutableMapping[str, Any]:
         """parse page number from next_page_token and return it as a request param"""
+        relations_params = {"include": ",".join(self.relations)}
         if next_page_token:
             parse_url = urlparse(next_page_token["page"])
             query = parse_qs(parse_url.query)
-            return {"page[number]": query["page[number]"][0]}
-        return {}
+            return relations_params | {"page[number]": query["page[number]"][0]}
+        return relations_params
 
     def request_headers(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> Mapping[str, Any]:
-        """ """
+        """
+        set request_headers other than authenticator
+        """
         return {"X-Api-Version": "20210218"}
 
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
@@ -79,7 +75,16 @@ class TeamtailorStream(HttpStream, ABC):
         :return an iterable containing each record in the response
         """
         response_json = response.json()
-        attributes = [{"id": item["id"]} | item["attributes"] for item in response_json["data"]]
+        attributes = [
+            {"id": item["id"]}
+            | {
+                item["relationships"][relation]["data"]["type"] + "_id": item["relationships"][relation]["data"]["id"]
+                for relation in self.relations
+                if item["relationships"][relation]["data"]
+            }
+            | item["attributes"]
+            for item in response_json["data"]
+        ]
         yield from attributes
 
 
@@ -91,10 +96,7 @@ class Locations(TeamtailorStream):
     def path(
         self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> str:
-        """
-        TODO: Override this method to define the path this stream corresponds to. E.g. if the url is https://example-api.com/v1/customers then this
-        should return "customers". Required.
-        """
+        """route for the locations stream"""
         return "locations"
 
 
@@ -102,12 +104,23 @@ class JobApplications(TeamtailorStream):
     """define how to load the data from the locations stream"""
 
     primary_key = "id"
+    relations = ["candidate", "job", "stage", "reject-reason"]
 
     def path(
         self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> str:
-        """
-        TODO: Override this method to define the path this stream corresponds to. E.g. if the url is https://example-api.com/v1/customers then this
-        should return "customers". Required.
-        """
+        """route for job applications"""
         return "job-applications"
+
+
+class Companies(TeamtailorStream):
+    """define how to load the data from the locations stream"""
+
+    primary_key = "id"
+    relations = ["manager"]
+
+    def path(
+        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> str:
+        """route for companies"""
+        return "companies"
