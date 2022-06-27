@@ -2,32 +2,82 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
 	"properties": {
-        "id": "integer",
-        "connected": ["null", "string"],
-        "created-at": ["null", "string"],
-        "email": ["null", "string"],
-        "facebook-id": ["null", "string"],
-        "first-name": ["null", "string"],
-        "internal": ["null", "string"],
-        "last-name": ["null", "string"],
-        "linkedin-uid": ["null", "string"],
-        "linkedin-url": ["null", "string"],
-        "original-resume": ["null", "string"],
-        "phone": ["null", "string"],
-        "picture": ["null", "string"],
-        "pitch": ["null", "string"],
-        "referring-site": ["null", "string"],
-        "referring-url": ["null", "string"],
-        "referred": ["null", "string"],
-        "resume": ["null", "string"],
-        "sourced": ["null", "string"],
-        "unsubscribed": ["null", "string"],
-        "updated-at": ["null", "string"],
-        "facebook-profile": ["null", "string"],
-        "linkedin-profile": ["null", "string"],
-        "tags": ["null", "string"]
-	},
-	"required": [
+        "id": {
+                "type":"integer"
+        },
+        "connected": {
+                "type":"integer"
+        },
+        "created-at": {
+                "type": ["null", "string"],
+                "format" : "date-time"
+        },
+        "email": {
+                "type": ["null", "string"]
+        },
+        "facebook-id": {
+                "type": ["null", "string"]
+        },
+        "first-name": {
+                "type": ["null", "string"]
+        },
+        "internal": {
+                "type":["null", "string"]
+        },
+        "last-name": {
+                "type": ["null", "string"]
+        },
+        "linkedin-uid": {
+                "type": ["null", "string"]
+        },
+        "linkedin-url": {
+                "type": ["null", "string"]
+        },
+        "original-resume": {
+                "type": ["null", "string"]
+        },
+        "phone": {
+                "type": ["null", "string"]
+        },
+        "picture": {
+                "type": ["null", "string"]
+        },
+        "pitch": {
+                "type": ["null", "string"]
+        },
+        "referring-site": {
+                "type": ["null", "string"]
+        },
+        "referring-url": {
+                "type": ["null", "string"]
+        },
+        "referred": {
+                "type": ["null", "string"]
+        },
+        "resume": {
+                "type": ["null", "string"]
+        },
+        "sourced": {
+                "type": ["null", "string"]
+        },
+        "unsubscribed": {
+                "type": ["null", "string"]
+        },
+        "updated-at": {
+                "type": ["null", "string"],
+                "format" : "date-time"
+        },
+        "facebook-profile": {
+                "type": ["null", "string"]
+        },
+        "linkedin-profile": {
+                "type": ["null", "string"]
+        },
+        "tags": {
+                "type": ["null", "string"]
+	}
+        },
+        "required": [
 		"id"
 	]
 }

@@ -2,16 +2,39 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
 	"properties": {
-		"id": "integer",
-		"cover-letter":["null", "string"],
-		"created-at": ["null", "string"],
-		"referring-site": ["null", "string"],
-		"referring-url": ["null", "string"],
-		"rejected-at": ["null", "string"],
-		"sourced": ["null", "bool"],
-		"updated-at": ["null", "string"],
-		"row-order": ["null", "integer"],
-		"changed-stage-at": ["null", "string"]
+		"id": { "type": ["integer"]
+		},
+		"cover-letter":{
+			"type":["null", "string"]
+		},
+		"created-at": {
+			"type": ["null", "string"],
+			"format": "date-time"
+		},
+		"referring-site": {
+			"type": ["null", "string"]
+		},
+		"referring-url": {
+			"type": ["null", "string"]
+		},
+		"rejected-at": {
+			"type": ["null", "string"],
+			"format": "date-time"
+		},
+		"sourced": {
+			"type": ["null", "bool"]
+		},
+		"updated-at": {
+			"type": ["null", "string"],
+			"format": "date-time"
+		},
+		"row-order": {
+			"type":["null", "integer"]
+		},
+		"changed-stage-at": {
+			"type": ["null", "string"],
+			"format": "date-time"
+		}
 	},
 	"required": [
 		"id"
