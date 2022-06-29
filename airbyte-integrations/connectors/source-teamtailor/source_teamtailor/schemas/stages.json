@@ -1,35 +1,33 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": ["integer"]
-		},
-        "created-at": {
-			"type": ["null", "string"],
-			"format": "date-time"
-		},
-        "updated-at": {
-			"type": ["null", "string"],
-			"format": "date-time"
-		},
-        "name": {
-			"type": ["null", "string"]
-		},
-        "stage-type": {
-			"type": ["null", "string"]
-		},
-        "row-order": {
-			"type": ["null", "string"]
-		},
-        "active-job-applications-count": {
-			"type": ["null", "string"]
-		},
-        "rejected-job-applications-count": {
-			"type": ["null", "string"]
-		} 
-	},
-	"required": [
-		"id"
-	]
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": ["integer"]
+    },
+    "created-at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "updated-at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "name": {
+      "type": ["null", "string"]
+    },
+    "stage-type": {
+      "type": ["null", "string"]
+    },
+    "row-order": {
+      "type": ["null", "string"]
+    },
+    "active-job-applications-count": {
+      "type": ["null", "string"]
+    },
+    "rejected-job-applications-count": {
+      "type": ["null", "string"]
+    }
+  },
+  "required": ["id"]
 }

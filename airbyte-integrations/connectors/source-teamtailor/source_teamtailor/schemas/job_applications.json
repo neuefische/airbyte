@@ -1,42 +1,45 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"type": "object",
-	"properties": {
-		"id": { "type": ["integer"]
-		},
-		"cover-letter":{
-			"type":["null", "string"]
-		},
-		"created-at": {
-			"type": ["null", "string"],
-			"format": "date-time"
-		},
-		"referring-site": {
-			"type": ["null", "string"]
-		},
-		"referring-url": {
-			"type": ["null", "string"]
-		},
-		"rejected-at": {
-			"type": ["null", "string"],
-			"format": "date-time"
-		},
-		"sourced": {
-			"type": ["null", "bool"]
-		},
-		"updated-at": {
-			"type": ["null", "string"],
-			"format": "date-time"
-		},
-		"row-order": {
-			"type":["null", "integer"]
-		},
-		"changed-stage-at": {
-			"type": ["null", "string"],
-			"format": "date-time"
-		}
-	},
-	"required": [
-		"id"
-	]
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": { "type": ["integer"] },
+    "cover-letter": {
+      "type": ["null", "string"]
+    },
+    "created-at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "referring-site": {
+      "type": ["null", "string"]
+    },
+    "referring-url": {
+      "type": ["null", "string"]
+    },
+    "rejected-at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "sourced": {
+      "type": ["null", "bool"]
+    },
+    "updated-at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "row-order": {
+      "type": ["null", "integer"]
+    },
+    "changed-stage-at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "job_id": {
+      "type": ["null", "string"]
+    },
+    "reject-reason_id": {
+      "type": ["null", "string"]
+    }
+  },
+  "required": ["id"]
 }

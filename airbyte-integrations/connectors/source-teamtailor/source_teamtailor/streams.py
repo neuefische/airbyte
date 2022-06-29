@@ -52,21 +52,28 @@ class TeamtailorStream(HttpStream, ABC):
         """
         return {"X-Api-Version": "20210218"}
 
+    def parse_relationships(self, item: Mapping[str, Any]) -> Mapping[str, Any]:
+        """
+        :param item: a single record from the response
+        :return a dictionary containing the relationships of the record
+        """
+        # TODO make all names snakecase
+        relationships = {}
+        for relation in self.relations:
+            if (
+                relation in item["relationships"]
+                and "data" in item["relationships"][relation]
+                and item["relationships"][relation]["data"] is not None
+            ):
+                relationships[relation + "_relation"] = item["relationships"][relation]["data"]
+        return relationships
+
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         """
         :return an iterable containing each record in the response
         """
         response_json = response.json()
-        attributes = [
-            {"id": item["id"]}
-            | {
-                item["relationships"][relation]["data"]["type"] + "_id": item["relationships"][relation]["data"]["id"]
-                for relation in self.relations
-                if item["relationships"][relation]["data"]
-            }
-            | item["attributes"]
-            for item in response_json["data"]
-        ]
+        attributes = [{"id": item["id"]} | self.parse_relationships(item) | item["attributes"] for item in response_json["data"]]
         yield from attributes
 
 
@@ -93,19 +100,6 @@ class JobApplications(TeamtailorStream):
     ) -> str:
         """route for job applications"""
         return "job-applications"
-
-
-class Companies(TeamtailorStream):
-    """route for companies"""
-
-    primary_key = "id"
-    relations = ["manager"]
-
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
-        """ """
-        return "companies"
 
 
 class Candidates(TeamtailorStream):
@@ -137,7 +131,7 @@ class CustomFieldValues(TeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    relations = ["custom_field", "owner"]
+    relations = ["custom-field", "owner"]
 
     def path(
         self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None

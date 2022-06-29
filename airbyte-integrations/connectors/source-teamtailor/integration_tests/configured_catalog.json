@@ -2,7 +2,7 @@
   "streams": [
     {
       "stream": {
-        "name": "locations",
+        "name": "custom_field_values",
         "json_schema": {
           "$schema": "http://json-schema.org/draft-04/schema#",
           "type": "object",
@@ -17,26 +17,10 @@
       "sync_mode": "full_refresh",
       "destination_sync_mode": "overwrite"
     },
+
     {
       "stream": {
-        "name": "job_applications",
-        "json_schema": {
-          "$schema": "http://json-schema.org/draft-04/schema#",
-          "type": "object",
-          "properties": {
-            "access_token": {
-              "type": "string"
-            }
-          }
-        },
-        "supported_sync_modes": ["full_refresh"]
-      },
-      "sync_mode": "full_refresh",
-      "destination_sync_mode": "overwrite"
-    },
-    {
-      "stream": {
-        "name": "companies",
+        "name": "candidates",
         "json_schema": {
           "$schema": "http://json-schema.org/draft-04/schema#",
           "type": "object",
