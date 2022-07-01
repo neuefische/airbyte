@@ -2,9 +2,9 @@
   "streams": [
     {
       "stream": {
-        "name": "custom_field_values",
+        "name": "job_applications",
         "json_schema": {
-          "$schema": "http://json-schema.org/draft-04/schema#",
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
             "access_token": {
@@ -17,12 +17,11 @@
       "sync_mode": "full_refresh",
       "destination_sync_mode": "overwrite"
     },
-
     {
       "stream": {
         "name": "candidates",
         "json_schema": {
-          "$schema": "http://json-schema.org/draft-04/schema#",
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
             "access_token": {

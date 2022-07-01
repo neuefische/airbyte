@@ -13,8 +13,19 @@ connectionSpecification:
         Access token to connect to Teamtailor. 
         See https://docs.teamtailor.com/#authentication
       airbyte_secret: true
+      order: 1
+    start_date:
+      type: string
+      title: Replication start date
+      pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}$
+      description: >-
+        UTC date and time in the format 2017-01-25. Only data generated
+        after this date will be replicated.
+      examples:
+        - "2022-01-25"
+      order: 2
     api_version:
       type: string
       description: >-
         API version. 
-        See https://docs.teamtailor.com/#versioning 
+        See https://docs.teamtailor.com/#versioning

@@ -15,6 +15,7 @@ def test_check_connection(mocker):
     assert source.check_connection(logger_mock, config_mock) == (True, None)
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_streams(mocker):
     source = SourceTeamtailor()
     config_mock = MagicMock()

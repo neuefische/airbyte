@@ -9,7 +9,7 @@ import requests
 from airbyte_cdk.sources import AbstractSource
 from airbyte_cdk.sources.streams import Stream
 from airbyte_cdk.sources.streams.http.requests_native_auth import TokenAuthenticator
-from source_teamtailor.streams import Candidates, CustomFieldValues, JobApplications, Locations, Stages, TeamtailorStream
+from source_teamtailor.streams import Candidates, JobApplications, TeamtailorStream
 
 """
 This is the source class for Teamtailor.
@@ -46,12 +46,9 @@ class SourceTeamtailor(AbstractSource):
         """
         :param config: A Mapping of the user input configuration as defined in the connector spec.
         """
-        # TODO remove the authenticator if not required.
-        auth = TokenAuthenticator(auth_method="Token", token=config["access_token"])
+        authenticator = TokenAuthenticator(auth_method="Token", token=config["access_token"])
+        args = {"authenticator": authenticator, "start_date": config["start_date"], "api_version": config["api_version"]}
         return [
-            Locations(authenticator=auth),
-            JobApplications(authenticator=auth),
-            Candidates(authenticator=auth),
-            CustomFieldValues(authenticator=auth),
-            Stages(authenticator=auth),
+            JobApplications(**args),
+            Candidates(**args),
         ]

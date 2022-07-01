@@ -22,6 +22,11 @@ class TeamtailorStream(HttpStream, ABC):
     url_base = "https://api.teamtailor.com/v1/"
     relations = []  # list of relations to be fetched by child classes
 
+    def __init__(self, start_date: int, api_version: str, **kwargs):
+        super().__init__(**kwargs)
+        self.start_date = start_date
+        self.api_version = api_version
+
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
         """
         :param response: the most recent response from the API
@@ -37,7 +42,7 @@ class TeamtailorStream(HttpStream, ABC):
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> MutableMapping[str, Any]:
         """parse page number from next_page_token and return it as a request param"""
-        relations_params = {"include": ",".join(self.relations)}
+        relations_params = {"include": ",".join(self.relations), "page[size]": 30, "filter[created-at][from]": self.start_date}
         if next_page_token:
             parse_url = urlparse(next_page_token["page"])
             query = parse_qs(parse_url.query)
@@ -50,54 +55,23 @@ class TeamtailorStream(HttpStream, ABC):
         """
         set request_headers other than authenticator
         """
-        return {"X-Api-Version": "20210218"}
-
-    def parse_relationships(self, item: Mapping[str, Any]) -> Mapping[str, Any]:
-        """
-        :param item: a single record from the response
-        :return a dictionary containing the relationships of the record
-        """
-        # TODO make all names snakecase
-        relationships = {}
-        for relation in self.relations:
-            if (
-                relation in item["relationships"]
-                and "data" in item["relationships"][relation]
-                and item["relationships"][relation]["data"] is not None
-            ):
-                relationships[relation + "_relation"] = item["relationships"][relation]["data"]
-        return relationships
+        return {"X-Api-Version": self.api_version}
 
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         """
         :return an iterable containing each record in the response
         """
         response_json = response.json()
-        attributes = [{"id": item["id"]} | self.parse_relationships(item) | item["attributes"] for item in response_json["data"]]
-        yield from attributes
-
-
-class Locations(TeamtailorStream):
-    """define how to load the data from the locations stream"""
-
-    primary_key = "id"
-
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
-        """route for the locations stream"""
-        return "locations"
+        yield from response_json.get("data", [])
 
 
 class JobApplications(TeamtailorStream):
     """define how to load the data from the locations stream"""
 
     primary_key = "id"
-    relations = ["candidate", "job", "stage", "reject-reason"]
+    relations = ["job", "stage", "reject-reason"]
 
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
+    def path(self, **kwargs) -> str:
         """route for job applications"""
         return "job-applications"
 
@@ -106,25 +80,21 @@ class Candidates(TeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    relations = [
-        "activities",
-        "department",
-        "role",
-        "job-applications",
-        "questions",
-        "answers",
-        "locations",
-        "regions",
-        "uploads",
-        "custom-field-values",
-        "partner-results",
-    ]
+    relations = ["job-applications"]
 
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
-        """ """
+    def path(self, **kwargs) -> str:
+        """route for candidates"""
         return "candidates"
+
+
+class Locations(TeamtailorStream):
+    """define how to load the data from the locations stream"""
+
+    primary_key = "id"
+
+    def path(self, **kwargs) -> str:
+        """route for the locations stream"""
+        return "locations"
 
 
 class CustomFieldValues(TeamtailorStream):
@@ -133,9 +103,7 @@ class CustomFieldValues(TeamtailorStream):
     primary_key = "id"
     relations = ["custom-field", "owner"]
 
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
+    def path(self, **kwargs) -> str:
         """return path for custom field values"""
         return "custom-field-values"
 
@@ -146,8 +114,6 @@ class Stages(TeamtailorStream):
     primary_key = "id"
     relations = ["job-applications", "job", "triggers"]
 
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
+    def path(self, **kwargs) -> str:
         """return path for stages"""
         return "stages"

@@ -18,6 +18,12 @@ def patch_base_class(mocker):
     mocker.patch.object(TeamtailorStream, "__abstractmethods__", set())
 
 
+@pytest.fixture(name="config")
+def config_fixture():
+    config = {"authenticator": "authenticator", "start_date": "2022-05-01", "api_version": "20210218"}
+    return config
+
+
 @pytest.mark.skip(reason="no way of currently testing this")
 def test_request_params(patch_base_class):
     stream = TeamtailorStream()
@@ -30,10 +36,22 @@ def test_request_params(patch_base_class):
 
 @pytest.mark.skip(reason="no way of currently testing this")
 def test_next_page_token(patch_base_class):
-    stream = TeamtailorStream()
-    # TODO: replace this with your input parameters
-    inputs = {"response": MagicMock()}
-    # TODO: replace this with your expected next page token
+    stream = JobApplications()
+
+    json_inputs = {
+        "data": [
+            {
+                "id": "1234",
+                "attributes": {"sourced": True},
+                "relationships": {
+                    "candidate": {"data": {"id": "1234", "type": "candidates"}},
+                    "job": {"data": {"id": "5678", "type": "jobs"}},
+                },
+            }
+        ]
+    }
+
+    inputs = {"response": MagicMock(json=MagicMock(return_value=json_inputs))}
     expected_token = None
     assert stream.next_page_token(**inputs) == expected_token
 
