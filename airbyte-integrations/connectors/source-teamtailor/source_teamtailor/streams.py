@@ -90,6 +90,12 @@ class Jobs(TeamtailorStream):
         """route for jobs"""
         return "jobs"
 
+    def request_params(self, stream_state=None, **kwargs):
+        stream_state = stream_state or {}
+        params = super().request_params(stream_state=stream_state, **kwargs)
+        params["filter[status]"] = "all"
+        return params
+
 
 class Candidates(TeamtailorStream):
     """define how to load the data from the candidate stream"""
