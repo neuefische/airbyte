@@ -19,8 +19,8 @@ class TeamtailorStream(HttpStream, ABC):
     Each stream should extend this class (or another abstract subclass of it) to specify behavior unique to that stream.
     """
 
-    url_base = "https://api.teamtailor.com/v1/"
-    relations = []  # list of relations to be fetched by child classes
+    url_base: str = "https://api.teamtailor.com/v1/"
+    relations: Iterable[str] = []  # list of relations to be fetched by child classes
 
     def __init__(self, start_date: int, api_version: str, **kwargs):
         super().__init__(**kwargs)
@@ -38,11 +38,9 @@ class TeamtailorStream(HttpStream, ABC):
             return {"page": next_page}
         return None
 
-    def request_params(
-        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> MutableMapping[str, Any]:
+    def request_params(self, next_page_token: Mapping[str, Any] = None, **kwargs) -> MutableMapping[str, Any]:
         """parse page number from next_page_token and return it as a request param"""
-        relations_params = {"include": ",".join(self.relations), "page[size]": 30, "filter[created-at][from]": self.start_date}
+        relations_params = {"include": ",".join(self.relations), "page[size]": 30}
         if next_page_token:
             parse_url = urlparse(next_page_token["page"])
             query = parse_qs(parse_url.query)
@@ -69,11 +67,28 @@ class JobApplications(TeamtailorStream):
     """define how to load the data from the locations stream"""
 
     primary_key = "id"
-    relations = ["job", "stage", "reject-reason"]
+    relations = ["job", "stage", "reject-reason", "candidate"]
 
     def path(self, **kwargs) -> str:
         """route for job applications"""
         return "job-applications"
+
+    def request_params(self, stream_state=None, **kwargs):
+        stream_state = stream_state or {}
+        params = super().request_params(stream_state=stream_state, **kwargs)
+        params["filter[created-at][from]"] = self.start_date
+        return params
+
+
+class Jobs(TeamtailorStream):
+    """define how to load the data from the job stream"""
+
+    primary_key = "id"
+    relations = ["candidates", "stages", "role", "locations"]
+
+    def path(self, **kwargs) -> str:
+        """route for jobs"""
+        return "jobs"
 
 
 class Candidates(TeamtailorStream):
@@ -86,22 +101,18 @@ class Candidates(TeamtailorStream):
         """route for candidates"""
         return "candidates"
 
-
-class Locations(TeamtailorStream):
-    """define how to load the data from the locations stream"""
-
-    primary_key = "id"
-
-    def path(self, **kwargs) -> str:
-        """route for the locations stream"""
-        return "locations"
+    def request_params(self, stream_state=None, **kwargs):
+        stream_state = stream_state or {}
+        params = super().request_params(stream_state=stream_state, **kwargs)
+        params["filter[created-at][from]"] = self.start_date
+        return params
 
 
 class CustomFieldValues(TeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    relations = ["custom-field", "owner"]
+    relations = ["custom-field"]
 
     def path(self, **kwargs) -> str:
         """return path for custom field values"""
@@ -117,3 +128,13 @@ class Stages(TeamtailorStream):
     def path(self, **kwargs) -> str:
         """return path for stages"""
         return "stages"
+
+
+class Locations(TeamtailorStream):
+    """define how to load the data from the locations stream"""
+
+    primary_key = "id"
+
+    def path(self, **kwargs) -> str:
+        """route for the locations stream"""
+        return "locations"

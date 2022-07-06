@@ -1,10 +1,136 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ModelItem",
   "type": "object",
   "properties": {
-    "id": "integer",
-    "field-type": ["null", "string"],
-    "value": ["null", "string"]
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "type": {
+      "title": "Type",
+      "type": "string"
+    },
+    "links": {
+      "$ref": "#/definitions/Links"
+    },
+    "attributes": {
+      "$ref": "#/definitions/Attributes"
+    },
+    "relationships": {
+      "$ref": "#/definitions/Relationships"
+    }
   },
-  "required": ["id"]
+  "required": ["id", "type", "links", "attributes", "relationships"],
+  "definitions": {
+    "Links": {
+      "title": "Links",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        }
+      },
+      "required": ["self"]
+    },
+    "Attributes": {
+      "title": "Attributes",
+      "type": "object",
+      "properties": {
+        "field-type": {
+          "title": "Field-Type",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["field-type", "value"]
+    },
+    "Links1": {
+      "title": "Links1",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Data": {
+      "title": "Data",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id"]
+    },
+    "CustomField": {
+      "title": "CustomField",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links1"
+        },
+        "data": {
+          "$ref": "#/definitions/Data"
+        }
+      },
+      "required": ["links", "data"]
+    },
+    "Links2": {
+      "title": "Links2",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Owner": {
+      "title": "Owner",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links2"
+        }
+      },
+      "required": ["links"]
+    },
+    "Relationships": {
+      "title": "Relationships",
+      "type": "object",
+      "properties": {
+        "custom-field": {
+          "$ref": "#/definitions/CustomField"
+        },
+        "owner": {
+          "$ref": "#/definitions/Owner"
+        }
+      },
+      "required": ["custom-field", "owner"]
+    }
+  }
 }

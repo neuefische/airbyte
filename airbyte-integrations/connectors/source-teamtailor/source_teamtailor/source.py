@@ -9,7 +9,7 @@ import requests
 from airbyte_cdk.sources import AbstractSource
 from airbyte_cdk.sources.streams import Stream
 from airbyte_cdk.sources.streams.http.requests_native_auth import TokenAuthenticator
-from source_teamtailor.streams import Candidates, JobApplications, TeamtailorStream
+from source_teamtailor.streams import Candidates, CustomFieldValues, JobApplications, Jobs, Stages, TeamtailorStream
 
 """
 This is the source class for Teamtailor.
@@ -17,7 +17,7 @@ This is the source class for Teamtailor.
 
 
 class SourceTeamtailor(AbstractSource):
-    def check_connection(self, logger, config) -> Tuple[bool, any]:
+    def check_connection(self, logger, config) -> Tuple[bool, Any]:
         """
         check_connection is used to check if the source is able to connect to the source.
 
@@ -51,4 +51,7 @@ class SourceTeamtailor(AbstractSource):
         return [
             JobApplications(**args),
             Candidates(**args),
+            Jobs(**args),
+            Stages(**args),
+            CustomFieldValues(**args),
         ]

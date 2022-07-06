@@ -1,33 +1,216 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ModelItem",
   "type": "object",
   "properties": {
     "id": {
-      "type": ["integer"]
+      "title": "Id",
+      "type": "string"
     },
-    "created-at": {
-      "type": ["null", "string"],
-      "format": "date-time"
+    "type": {
+      "title": "Type",
+      "type": "string"
     },
-    "updated-at": {
-      "type": ["null", "string"],
-      "format": "date-time"
+    "links": {
+      "$ref": "#/definitions/Links"
     },
-    "name": {
-      "type": ["null", "string"]
+    "attributes": {
+      "$ref": "#/definitions/Attributes"
     },
-    "stage-type": {
-      "type": ["null", "string"]
-    },
-    "row-order": {
-      "type": ["null", "string"]
-    },
-    "active-job-applications-count": {
-      "type": ["null", "string"]
-    },
-    "rejected-job-applications-count": {
-      "type": ["null", "string"]
+    "relationships": {
+      "$ref": "#/definitions/Relationships"
     }
   },
-  "required": ["id"]
+  "required": ["id", "type", "links", "attributes", "relationships"],
+  "definitions": {
+    "Links": {
+      "title": "Links",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        }
+      },
+      "required": ["self"]
+    },
+    "Attributes": {
+      "title": "Attributes",
+      "type": "object",
+      "properties": {
+        "created-at": {
+          "title": "Created-At",
+          "type": "string"
+        },
+        "updated-at": {
+          "title": "Updated-At",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "stage-type": {
+          "title": "Stage-Type",
+          "type": "string"
+        },
+        "row-order": {
+          "title": "Row-Order",
+          "type": "integer"
+        },
+        "active-job-applications-count": {
+          "title": "Active-Job-Applications-Count",
+          "type": "integer"
+        },
+        "rejected-job-applications-count": {
+          "title": "Rejected-Job-Applications-Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "created-at",
+        "updated-at",
+        "name",
+        "stage-type",
+        "row-order",
+        "active-job-applications-count",
+        "rejected-job-applications-count"
+      ]
+    },
+    "Links1": {
+      "title": "Links1",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Datum": {
+      "title": "Datum",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id"]
+    },
+    "JobApplications": {
+      "title": "JobApplications",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links1"
+        },
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Datum"
+          }
+        }
+      },
+      "required": ["links", "data"]
+    },
+    "Links2": {
+      "title": "Links2",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Triggers": {
+      "title": "Triggers",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links2"
+        },
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": ["links", "data"]
+    },
+    "Links3": {
+      "title": "Links3",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Data": {
+      "title": "Data",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id"]
+    },
+    "Job": {
+      "title": "Job",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links3"
+        },
+        "data": {
+          "$ref": "#/definitions/Data"
+        }
+      },
+      "required": ["links", "data"]
+    },
+    "Relationships": {
+      "title": "Relationships",
+      "type": "object",
+      "properties": {
+        "job-applications": {
+          "$ref": "#/definitions/JobApplications"
+        },
+        "triggers": {
+          "$ref": "#/definitions/Triggers"
+        },
+        "job": {
+          "$ref": "#/definitions/Job"
+        }
+      },
+      "required": ["job-applications", "triggers", "job"]
+    }
+  }
 }
