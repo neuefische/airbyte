@@ -32,6 +32,7 @@ class TeamtailorStream(HttpStream, ABC):
         :param response: the most recent response from the API
         :return the next page token if there is one, None otherwise
         """
+        # TODO write testcase for last page
         decoded_response = response.json()
         next_page = decoded_response["links"].get("next", False)
         if next_page:
@@ -40,7 +41,7 @@ class TeamtailorStream(HttpStream, ABC):
 
     def request_params(self, next_page_token: Mapping[str, Any] = None, **kwargs) -> MutableMapping[str, Any]:
         """parse page number from next_page_token and return it as a request param"""
-        relations_params = {"include": ",".join(self.relations), "page[size]": 30}
+        relations_params = {"include": ",".join(self.relations), "page[size]": 10}
         if next_page_token:
             parse_url = urlparse(next_page_token["page"])
             query = parse_qs(parse_url.query)
@@ -59,6 +60,7 @@ class TeamtailorStream(HttpStream, ABC):
         """
         :return an iterable containing each record in the response
         """
+        # TODO write testcase for empty data
         response_json = response.json()
         yield from response_json.get("data", [])
 
@@ -94,6 +96,7 @@ class Jobs(TeamtailorStream):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
         params["filter[status]"] = "all"
+        params["page[size]"] = 2
         return params
 
 
