@@ -25,6 +25,7 @@ class TeamtailorStream(HttpStream, ABC):
     def __init__(self, start_date: int, api_version: str, **kwargs):
         super().__init__(**kwargs)
         self.start_date = start_date
+        # self.start_date = config.get("start_date") or (pendulum.now() - pendulum.duration(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
         self.api_version = api_version
 
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
@@ -79,14 +80,19 @@ class JobApplications(TeamtailorStream):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
         params["filter[created-at][from]"] = self.start_date
+        params["sort"] = "updated-at"
         return params
 
 
 class Jobs(TeamtailorStream):
-    """define how to load the data from the job stream"""
+    """
+    define how to load the data from the job stream
+
+    This can not be incremental as filtering does not work
+    """
 
     primary_key = "id"
-    relations = ["candidates", "stages", "role", "locations"]
+    relations = []
 
     def path(self, **kwargs) -> str:
         """route for jobs"""
@@ -95,8 +101,9 @@ class Jobs(TeamtailorStream):
     def request_params(self, stream_state=None, **kwargs):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
-        params["filter[status]"] = "all"
-        params["page[size]"] = 2
+        params["sort"] = "updated-at"
+        params["filter[status]"] = "unlisted"
+        params["page[size]"] = 5
         return params
 
 
@@ -104,7 +111,7 @@ class Candidates(TeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    relations = ["job-applications"]
+    relations = ["job-applications", "custom-field-values"]
 
     def path(self, **kwargs) -> str:
         """route for candidates"""
@@ -114,6 +121,7 @@ class Candidates(TeamtailorStream):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
         params["filter[created-at][from]"] = self.start_date
+        params["sort"] = "updated-at"
         return params
 
 

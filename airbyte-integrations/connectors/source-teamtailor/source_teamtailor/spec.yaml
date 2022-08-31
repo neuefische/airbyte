@@ -11,7 +11,8 @@ connectionSpecification:
       type: string
       description: >-
         Access token to connect to Teamtailor. 
-        See https://docs.teamtailor.com/#authentication
+        See https://docs.teamtailor.com/#authentication.
+        Multiple tokens can be specified, seperated with a ","
       airbyte_secret: true
       order: 1
     start_date:
@@ -26,6 +27,7 @@ connectionSpecification:
       order: 2
     api_version:
       type: string
+      default: "20210218"
       description: >-
         API version. 
         See https://docs.teamtailor.com/#versioning
