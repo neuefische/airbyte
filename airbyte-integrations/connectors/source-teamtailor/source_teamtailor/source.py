@@ -3,6 +3,7 @@
 #
 
 
+from datetime import datetime
 from typing import Any, List, Mapping, Tuple
 
 import requests
@@ -47,7 +48,8 @@ class SourceTeamtailor(AbstractSource):
         :param config: A Mapping of the user input configuration as defined in the connector spec.
         """
         authenticator = TokenAuthenticator(auth_method="Token", token=config["access_token"])
-        args = {"authenticator": authenticator, "start_date": config["start_date"], "api_version": config["api_version"]}
+        start_date = datetime.strptime(config["start_date"], "%Y-%m-%dT%H:%M:%SZ")
+        args = {"authenticator": authenticator, "start_date": start_date, "api_version": config["api_version"]}
         return [
             JobApplications(**args),
             Candidates(**args),

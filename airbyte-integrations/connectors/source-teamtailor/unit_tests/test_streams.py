@@ -20,7 +20,7 @@ def patch_base_class(mocker):
 
 @pytest.fixture(name="config")
 def config_fixture():
-    config = {"authenticator": "authenticator", "start_date": "2022-05-01", "api_version": "20210218"}
+    config = {"access_token": "<token>", "start_date": "2022-05-01", "api_version": "20210218"}
     return config
 
 
@@ -35,9 +35,7 @@ def test_request_params(patch_base_class):
 
 
 @pytest.mark.skip(reason="no way of currently testing this")
-def test_next_page_token(patch_base_class):
-    stream = JobApplications()
-
+def test_next_page_token(requests_mock):
     json_inputs = {
         "data": [
             {
@@ -51,11 +49,14 @@ def test_next_page_token(patch_base_class):
         ]
     }
 
-    inputs = {"response": MagicMock(json=MagicMock(return_value=json_inputs))}
+    requests_mock.get("https://api.teamtailor.com/v1/job-applications", json=json_inputs)
+
+    stream = JobApplications()
     expected_token = None
-    assert stream.next_page_token(**inputs) == expected_token
+    assert stream.next_page_token(**json_inputs) == expected_token
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_parse_job_application_response():
     stream = JobApplications()
 
@@ -78,6 +79,7 @@ def test_parse_job_application_response():
     assert next(stream.parse_response(**inputs)) == expected_parsed_object
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_parse_job_application_responnse_no_relation():
     """test reponse parsing when no relationship is present"""
     stream = JobApplications()

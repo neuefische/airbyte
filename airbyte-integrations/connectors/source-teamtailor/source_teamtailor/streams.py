@@ -2,10 +2,12 @@
 # Copyright (c) 2022 Airbyte, Inc., all rights reserved.
 #
 from abc import ABC
+from datetime import datetime
 from typing import Any, Iterable, Mapping, MutableMapping, Optional
 from urllib.parse import parse_qs, urlparse
 
 import requests
+from airbyte_cdk.sources.streams.core import IncrementalMixin
 from airbyte_cdk.sources.streams.http import HttpStream
 
 
@@ -22,7 +24,7 @@ class TeamtailorStream(HttpStream, ABC):
     url_base: str = "https://api.teamtailor.com/v1/"
     relations: Iterable[str] = []  # list of relations to be fetched by child classes
 
-    def __init__(self, start_date: int, api_version: str, **kwargs):
+    def __init__(self, start_date: datetime, api_version: str, **kwargs):
         super().__init__(**kwargs)
         self.start_date = start_date
         # self.start_date = config.get("start_date") or (pendulum.now() - pendulum.duration(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -57,6 +59,10 @@ class TeamtailorStream(HttpStream, ABC):
         """
         return {"X-Api-Version": self.api_version}
 
+    # TODO implement loading schema from pydantic
+    # def get_json_schema(self) -> Mapping[str, Any]:
+    # return ResourceSchemaLoader(package_name_from_class(self.__class__)).get_schema(self.name)
+
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         """
         :return an iterable containing each record in the response
@@ -66,7 +72,50 @@ class TeamtailorStream(HttpStream, ABC):
         yield from response_json.get("data", [])
 
 
-class JobApplications(TeamtailorStream):
+class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
+    cursor_field = "updated-at"
+    cursor_filter = "filter[updated-at][from]"
+    state_checkpoint_interval = 100
+
+    def __init__(self, start_date: datetime, api_version: str, **kwargs):
+        super().__init__(start_date, api_version, **kwargs)
+        self._cursor_value = start_date
+
+    @property
+    def state(self) -> Mapping[str, Any]:
+        if self._cursor_value:
+            return {self.cursor_field: self._cursor_value.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        else:
+            return {self.cursor_field: self.start_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
+
+    @state.setter
+    def state(self, value: Mapping[str, Any]):
+        if value[self.cursor_field]:
+            self._cursor_value = datetime.strptime(value[self.cursor_field], "%Y-%m-%dT%H:%M:%SZ")
+        else:
+            self._cursor_value = self.start_date
+
+    def request_params(
+        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> MutableMapping[str, Any]:
+        params = super().request_params(stream_state=stream_state, stream_slice=stream_slice, next_page_token=next_page_token)
+        params[self.cursor_filter] = (
+            stream_state[self.cursor_field]
+            if stream_state and self.cursor_field in stream_state
+            else datetime.strftime(self.start_date, "%Y-%m-%dT%H:%M:%SZ")
+        )
+        return params
+
+    def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
+        for record in super().read_records(*args, **kwargs):
+            latest_record_date = datetime.strptime(
+                datetime.fromisoformat(record["attributes"][self.cursor_field]).strftime("%Y-%m-%dT%H:%M:%SZ"), "%Y-%m-%dT%H:%M:%SZ"
+            )
+            self._cursor_value = max(self._cursor_value, latest_record_date)
+            yield record
+
+
+class JobApplications(IncrementalTeamtailorStream):
     """define how to load the data from the locations stream"""
 
     primary_key = "id"
@@ -79,7 +128,7 @@ class JobApplications(TeamtailorStream):
     def request_params(self, stream_state=None, **kwargs):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
-        params["filter[created-at][from]"] = self.start_date
+        # params["filter[created-at][from]"] = self.start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         params["sort"] = "updated-at"
         return params
 
@@ -107,10 +156,11 @@ class Jobs(TeamtailorStream):
         return params
 
 
-class Candidates(TeamtailorStream):
+class Candidates(IncrementalTeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
+    cursor_field = "updated-at"
     relations = ["job-applications", "custom-field-values"]
 
     def path(self, **kwargs) -> str:
@@ -120,7 +170,7 @@ class Candidates(TeamtailorStream):
     def request_params(self, stream_state=None, **kwargs):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
-        params["filter[created-at][from]"] = self.start_date
+        params["filter[created-at][from]"] = self.start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         params["sort"] = "updated-at"
         return params
 

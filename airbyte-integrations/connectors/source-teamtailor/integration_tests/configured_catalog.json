@@ -2,6 +2,40 @@
   "streams": [
     {
       "stream": {
+        "name": "job_applications",
+        "json_schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "access_token": {
+              "type": "string"
+            }
+          }
+        },
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_mode": "incremental",
+      "destination_sync_mode": "overwrite"
+    },
+    {
+      "stream": {
+        "name": "candidates",
+        "json_schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "access_token": {
+              "type": "string"
+            }
+          }
+        },
+        "supported_sync_modes": ["full_refresh"]
+      },
+      "sync_mode": "full_refresh",
+      "destination_sync_mode": "overwrite"
+    },
+    {
+      "stream": {
         "name": "jobs",
         "json_schema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
@@ -17,45 +51,9 @@
       "sync_mode": "full_refresh",
       "destination_sync_mode": "overwrite"
     },
-
     {
       "stream": {
         "name": "stages",
-        "json_schema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {
-            "access_token": {
-              "type": "string"
-            }
-          }
-        },
-        "supported_sync_modes": ["full_refresh"]
-      },
-      "sync_mode": "full_refresh",
-      "destination_sync_mode": "overwrite"
-    },
-
-    {
-      "stream": {
-        "name": "job_applications",
-        "json_schema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {
-            "access_token": {
-              "type": "string"
-            }
-          }
-        },
-        "supported_sync_modes": ["full_refresh"]
-      },
-      "sync_mode": "full_refresh",
-      "destination_sync_mode": "overwrite"
-    },
-    {
-      "stream": {
-        "name": "candidates",
         "json_schema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
