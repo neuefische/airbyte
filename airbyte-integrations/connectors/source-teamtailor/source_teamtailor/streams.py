@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any, Iterable, Mapping, MutableMapping, Optional
 from urllib.parse import parse_qs, urlparse
 
+import pendulum
 import requests
 from airbyte_cdk.sources.streams.core import IncrementalMixin
 from airbyte_cdk.sources.streams.http import HttpStream
@@ -84,14 +85,14 @@ class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
     @property
     def state(self) -> Mapping[str, Any]:
         if self._cursor_value:
-            return {self.cursor_field: self._cursor_value.strftime("%Y-%m-%dT%H:%M:%SZ")}
+            return {self.cursor_field: self._cursor_value.isoformat()}
         else:
-            return {self.cursor_field: self.start_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
+            return {self.cursor_field: self.start_date.isoformat()}
 
     @state.setter
     def state(self, value: Mapping[str, Any]):
         if value[self.cursor_field]:
-            self._cursor_value = datetime.strptime(value[self.cursor_field], "%Y-%m-%dT%H:%M:%SZ")
+            self._cursor_value = pendulum.parse(value[self.cursor_field])
         else:
             self._cursor_value = self.start_date
 
@@ -100,17 +101,13 @@ class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
     ) -> MutableMapping[str, Any]:
         params = super().request_params(stream_state=stream_state, stream_slice=stream_slice, next_page_token=next_page_token)
         params[self.cursor_filter] = (
-            stream_state[self.cursor_field]
-            if stream_state and self.cursor_field in stream_state
-            else datetime.strftime(self.start_date, "%Y-%m-%dT%H:%M:%SZ")
+            stream_state[self.cursor_field] if stream_state and self.cursor_field in stream_state else self.start_date.isoformat()
         )
         return params
 
     def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
         for record in super().read_records(*args, **kwargs):
-            latest_record_date = datetime.strptime(
-                datetime.fromisoformat(record["attributes"][self.cursor_field]).strftime("%Y-%m-%dT%H:%M:%SZ"), "%Y-%m-%dT%H:%M:%SZ"
-            )
+            latest_record_date = pendulum.parse(record["attributes"][self.cursor_field])
             self._cursor_value = max(self._cursor_value, latest_record_date)
             yield record
 
@@ -128,7 +125,6 @@ class JobApplications(IncrementalTeamtailorStream):
     def request_params(self, stream_state=None, **kwargs):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
-        # params["filter[created-at][from]"] = self.start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         params["sort"] = "updated-at"
         return params
 
@@ -160,7 +156,6 @@ class Candidates(IncrementalTeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    cursor_field = "updated-at"
     relations = ["job-applications", "custom-field-values"]
 
     def path(self, **kwargs) -> str:
@@ -170,7 +165,6 @@ class Candidates(IncrementalTeamtailorStream):
     def request_params(self, stream_state=None, **kwargs):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
-        params["filter[created-at][from]"] = self.start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         params["sort"] = "updated-at"
         return params
 
@@ -195,6 +189,12 @@ class Stages(TeamtailorStream):
     def path(self, **kwargs) -> str:
         """return path for stages"""
         return "stages"
+
+    def request_params(self, stream_state=None, **kwargs):
+        stream_state = stream_state or {}
+        params = super().request_params(stream_state=stream_state, **kwargs)
+        params["sort"] = "updated-at"
+        return params
 
 
 class Locations(TeamtailorStream):

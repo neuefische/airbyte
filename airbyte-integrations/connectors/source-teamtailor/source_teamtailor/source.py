@@ -3,9 +3,9 @@
 #
 
 
-from datetime import datetime
 from typing import Any, List, Mapping, Tuple
 
+import pendulum
 import requests
 from airbyte_cdk.sources import AbstractSource
 from airbyte_cdk.sources.streams import Stream
@@ -48,7 +48,7 @@ class SourceTeamtailor(AbstractSource):
         :param config: A Mapping of the user input configuration as defined in the connector spec.
         """
         authenticator = TokenAuthenticator(auth_method="Token", token=config["access_token"])
-        start_date = datetime.strptime(config["start_date"], "%Y-%m-%dT%H:%M:%SZ")
+        start_date = pendulum.parse(config["start_date"])
         args = {"authenticator": authenticator, "start_date": start_date, "api_version": config["api_version"]}
         return [
             JobApplications(**args),
