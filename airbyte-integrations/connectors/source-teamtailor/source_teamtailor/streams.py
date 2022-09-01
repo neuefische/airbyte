@@ -156,7 +156,7 @@ class Candidates(IncrementalTeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    relations = ["job-applications", "custom-field-values"]
+    relations = ["job-applications"]
 
     def path(self, **kwargs) -> str:
         """route for candidates"""
