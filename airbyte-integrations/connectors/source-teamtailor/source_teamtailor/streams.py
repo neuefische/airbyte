@@ -147,7 +147,7 @@ class Jobs(TeamtailorStream):
         stream_state = stream_state or {}
         params = super().request_params(stream_state=stream_state, **kwargs)
         params["sort"] = "updated-at"
-        params["filter[status]"] = "unlisted"
+        params["filter[status]"] = "all"
         params["page[size]"] = 5
         return params
 
