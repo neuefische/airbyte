@@ -10,7 +10,16 @@ import requests
 from airbyte_cdk.sources import AbstractSource
 from airbyte_cdk.sources.streams import Stream
 from airbyte_cdk.sources.streams.http.requests_native_auth import TokenAuthenticator
-from source_teamtailor.streams import Candidates, CustomFieldValues, JobApplications, Jobs, Stages, TeamtailorStream
+from source_teamtailor.streams import (
+    Candidates,
+    CustomFieldOptions,
+    CustomFields,
+    CustomFieldValues,
+    JobApplications,
+    Jobs,
+    Stages,
+    TeamtailorStream,
+)
 
 """
 This is the source class for Teamtailor.
@@ -55,5 +64,7 @@ class SourceTeamtailor(AbstractSource):
             Candidates(**args),
             Jobs(**args),
             Stages(**args),
-            CustomFieldValues(**args),
+            CustomFields(**args),
+            CustomFieldValues(custom_field_ids=config["custom_field_ids"], **args),
+            CustomFieldOptions(custom_field_ids=config["custom_field_ids"], **args),
         ]

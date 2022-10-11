@@ -60,10 +60,6 @@ class TeamtailorStream(HttpStream, ABC):
         """
         return {"X-Api-Version": self.api_version}
 
-    # TODO implement loading schema from pydantic
-    # def get_json_schema(self) -> Mapping[str, Any]:
-    # return ResourceSchemaLoader(package_name_from_class(self.__class__)).get_schema(self.name)
-
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         """
         :return an iterable containing each record in the response
@@ -169,15 +165,58 @@ class Candidates(IncrementalTeamtailorStream):
         return params
 
 
+class CustomFields(TeamtailorStream):
+    """define how to load the data from the custom-fields stream"""
+
+    primary_key = "id"
+
+    def path(self, **kwargs) -> str:
+        """return path for custom field values"""
+        return "custom-fields"
+
+
 class CustomFieldValues(TeamtailorStream):
-    """define how to load the data from the candidate stream"""
+    """define how to load the data from the custom field values stream"""
 
     primary_key = "id"
     relations = ["custom-field"]
 
+    def __init__(self, custom_field_ids: str, **kwargs):
+        super().__init__(**kwargs)
+        self.custom_field_ids = custom_field_ids
+
     def path(self, **kwargs) -> str:
         """return path for custom field values"""
         return "custom-field-values"
+
+    def request_params(self, stream_state=None, **kwargs):
+        stream_state = stream_state or {}
+        params = super().request_params(stream_state=stream_state, **kwargs)
+        if self.custom_field_ids:
+            params["filter[custom-field]"] = self.custom_field_ids
+        return params
+
+
+class CustomFieldOptions(TeamtailorStream):
+    """define how to load the data from the custom-field-options stream"""
+
+    primary_key = "id"
+    relations = ["custom-field"]
+
+    def __init__(self, custom_field_ids: str, **kwargs):
+        super().__init__(**kwargs)
+        self.custom_field_ids = custom_field_ids
+
+    def path(self, **kwargs) -> str:
+        """return path for custom field values"""
+        return "custom-field-options"
+
+    def request_params(self, stream_state=None, **kwargs):
+        stream_state = stream_state or {}
+        params = super().request_params(stream_state=stream_state, **kwargs)
+        if self.custom_field_ids:
+            params["filter[custom-field]"] = self.custom_field_ids
+        return params
 
 
 class Stages(TeamtailorStream):

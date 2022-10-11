@@ -1,0 +1,168 @@
+{
+  "title": "Datum",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "type": {
+      "title": "Type",
+      "type": "string"
+    },
+    "links": {
+      "$ref": "#/definitions/Links"
+    },
+    "attributes": {
+      "$ref": "#/definitions/Attributes"
+    },
+    "relationships": {
+      "$ref": "#/definitions/Relationships"
+    }
+  },
+  "required": ["id", "type", "links", "attributes", "relationships"],
+  "definitions": {
+    "Links": {
+      "title": "Links",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        }
+      },
+      "required": ["self"]
+    },
+    "Attributes": {
+      "title": "Attributes",
+      "type": "object",
+      "properties": {
+        "api-name": {
+          "title": "Api-Name",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "field-type": {
+          "title": "Field-Type",
+          "type": "string"
+        },
+        "owner-type": {
+          "title": "Owner-Type",
+          "type": "string"
+        },
+        "is-hidden": {
+          "title": "Is-Hidden",
+          "type": "boolean"
+        },
+        "is-private": {
+          "title": "Is-Private",
+          "type": "boolean"
+        },
+        "is-searchable": {
+          "title": "Is-Searchable",
+          "type": "boolean"
+        },
+        "is-featured": {
+          "title": "Is-Featured",
+          "type": "boolean"
+        },
+        "is-external": {
+          "title": "Is-External",
+          "type": "boolean"
+        },
+        "is-required": {
+          "title": "Is-Required",
+          "type": "boolean"
+        },
+        "created-at": {
+          "title": "Created-At",
+          "type": "string"
+        },
+        "updated-at": {
+          "title": "Updated-At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "api-name",
+        "name",
+        "field-type",
+        "owner-type",
+        "is-hidden",
+        "is-private",
+        "is-searchable",
+        "is-featured",
+        "is-external",
+        "is-required",
+        "created-at",
+        "updated-at"
+      ]
+    },
+    "Links1": {
+      "title": "Links1",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "CustomFieldValues": {
+      "title": "CustomFieldValues",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links1"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links2": {
+      "title": "Links2",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "CustomFieldOptions": {
+      "title": "CustomFieldOptions",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links2"
+        }
+      },
+      "required": ["links"]
+    },
+    "Relationships": {
+      "title": "Relationships",
+      "type": "object",
+      "properties": {
+        "custom-field-values": {
+          "$ref": "#/definitions/CustomFieldValues"
+        },
+        "custom-field-options": {
+          "$ref": "#/definitions/CustomFieldOptions"
+        }
+      },
+      "required": ["custom-field-values"]
+    }
+  }
+}

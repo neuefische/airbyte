@@ -31,3 +31,11 @@ connectionSpecification:
       description: >-
         API version. 
         See https://docs.teamtailor.com/#versioning
+    custom_field_ids:
+      type: string
+      default: ""
+      description: >-
+        Filter custom-field-values for specified custom-field-ids 
+        to avoid loading huge amounts of unnecessary data
+      examples:
+        - "12985,14117,16049,16050,16051,16251,16252,16253,16705,16707,16707"
