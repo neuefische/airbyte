@@ -133,7 +133,7 @@ class Jobs(TeamtailorStream):
     """
 
     primary_key = "id"
-    relations = []
+    relations = ["custom-fields", "custom-field-values"]
 
     def path(self, **kwargs) -> str:
         """route for jobs"""
@@ -152,7 +152,7 @@ class Candidates(IncrementalTeamtailorStream):
     """define how to load the data from the candidate stream"""
 
     primary_key = "id"
-    relations = ["job-applications"]
+    relations = ["job-applications", "custom-field-values"]
 
     def path(self, **kwargs) -> str:
         """route for candidates"""
