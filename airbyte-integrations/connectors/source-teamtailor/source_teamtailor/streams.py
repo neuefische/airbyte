@@ -24,6 +24,7 @@ class TeamtailorStream(HttpStream, ABC):
 
     url_base: str = "https://api.teamtailor.com/v1/"
     relations: Iterable[str] = []  # list of relations to be fetched by child classes
+    raise_on_http_errors = False
 
     def __init__(self, start_date: datetime, api_version: str, **kwargs):
         super().__init__(**kwargs)
@@ -68,8 +69,6 @@ class TeamtailorStream(HttpStream, ABC):
         response_json = response.json()
         yield from response_json.get("data", [])
 
-    def raise_on_http_errors(self):
-        return False
 
 
 class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
