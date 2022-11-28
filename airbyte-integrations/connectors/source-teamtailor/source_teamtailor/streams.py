@@ -68,6 +68,9 @@ class TeamtailorStream(HttpStream, ABC):
         response_json = response.json()
         yield from response_json.get("data", [])
 
+    def raise_on_http_errors(self):
+        return False
+
 
 class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
     cursor_field = "updated-at"
