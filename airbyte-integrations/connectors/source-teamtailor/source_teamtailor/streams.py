@@ -79,7 +79,6 @@ class TeamtailorStream(HttpStream, ABC):
             else:
                 self.logger.error(f"Syncing stream {self.name} is failed, due to {error_code}. Full message: {error_message}")
 
-
     @property
     def raise_on_http_errors(self):
         return False
@@ -87,6 +86,7 @@ class TeamtailorStream(HttpStream, ABC):
 
 class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
     cursor_field = "updated-at"
+
     cursor_filter = "filter[updated-at][from]"
     state_checkpoint_interval = 100
 
@@ -119,10 +119,24 @@ class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
 
     def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
         for record in super().read_records(*args, **kwargs):
-            latest_record_date = pendulum.parse(record["attributes"][self.cursor_field])
-            self._cursor_value = max(self._cursor_value, latest_record_date)
-            yield record
+            try:
+                latest_record_date = pendulum.parse(record["attributes"][self.cursor_field])
+                self._cursor_value = max(self._cursor_value, latest_record_date)
+                yield record
+            except requests.exceptions.HTTPError as e:
+                status_code = e.response.status_code
+                parsed_error = e.response.json()
+                error_code = parsed_error.get("error", {}).get("code")
+                error_message = parsed_error.get("message")
+                if status_code == 500:
+                    self.logger.warn(f"Stream {self.name} is skipped, due to {error_code}. Full message: {error_message}")
+                    pass
+                else:
+                    self.logger.error(f"Syncing stream {self.name} is failed, due to {error_code}. Full message: {error_message}")
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class JobApplications(IncrementalTeamtailorStream):
     """define how to load the data from the locations stream"""
@@ -140,6 +154,9 @@ class JobApplications(IncrementalTeamtailorStream):
         params["sort"] = "updated-at"
         return params
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class Jobs(TeamtailorStream):
     """
@@ -163,6 +180,9 @@ class Jobs(TeamtailorStream):
         params["page[size]"] = 5
         return params
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class Candidates(IncrementalTeamtailorStream):
     """define how to load the data from the candidate stream"""
@@ -180,6 +200,9 @@ class Candidates(IncrementalTeamtailorStream):
         params["sort"] = "updated-at"
         return params
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class CustomFields(TeamtailorStream):
     """define how to load the data from the custom-fields stream"""
@@ -190,6 +213,9 @@ class CustomFields(TeamtailorStream):
         """return path for custom field values"""
         return "custom-fields"
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class CustomFieldValues(TeamtailorStream):
     """define how to load the data from the custom field values stream"""
@@ -212,6 +238,9 @@ class CustomFieldValues(TeamtailorStream):
             params["filter[custom-field]"] = self.custom_field_ids
         return params
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class CustomFieldOptions(TeamtailorStream):
     """define how to load the data from the custom-field-options stream"""
@@ -234,6 +263,9 @@ class CustomFieldOptions(TeamtailorStream):
             params["filter[custom-field]"] = self.custom_field_ids
         return params
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class Stages(TeamtailorStream):
     """define how to load the data from the candidate stream"""
@@ -251,6 +283,9 @@ class Stages(TeamtailorStream):
         params["sort"] = "updated-at"
         return params
 
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 class Locations(TeamtailorStream):
     """define how to load the data from the locations stream"""
