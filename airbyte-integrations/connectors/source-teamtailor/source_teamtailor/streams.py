@@ -24,7 +24,6 @@ class TeamtailorStream(HttpStream, ABC):
 
     url_base: str = "https://api.teamtailor.com/v1/"
     relations: Iterable[str] = []  # list of relations to be fetched by child classes
-    raise_on_http_errors = False
 
     def __init__(self, start_date: datetime, api_version: str, **kwargs):
         super().__init__(**kwargs)
@@ -67,8 +66,23 @@ class TeamtailorStream(HttpStream, ABC):
         """
         # TODO write testcase for empty data
         response_json = response.json()
-        yield from response_json.get("data", [])
+        try:
+            yield from response_json.get("data", [])
+        except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code
+            parsed_error = e.response.json()
+            error_code = parsed_error.get("error", {}).get("code")
+            error_message = parsed_error.get("message")
+            if status_code == 500:
+                self.logger.warn(f"Stream {self.name} is skipped, due to {error_code}. Full message: {error_message}")
+                pass
+            else:
+                self.logger.error(f"Syncing stream {self.name} is failed, due to {error_code}. Full message: {error_message}")
 
+
+    @property
+    def raise_on_http_errors(self):
+        return False
 
 
 class IncrementalTeamtailorStream(TeamtailorStream, IncrementalMixin):
