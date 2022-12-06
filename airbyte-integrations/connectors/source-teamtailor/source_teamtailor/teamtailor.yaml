@@ -1,0 +1,54 @@
+version: "0.1.0"
+
+definitions:
+  selector:
+    extractor:
+      field_pointer: []
+  requester:
+    url_base: "https://example.com"
+    http_method: "GET"
+    authenticator:
+      type: BearerAuthenticator
+      api_token: "{{ config['api_key'] }}"
+  retriever:
+    record_selector:
+      $ref: "*ref(definitions.selector)"
+    paginator:
+      type: NoPagination
+    requester:
+      $ref: "*ref(definitions.requester)"
+  base_stream:
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+  customers_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "customers"
+      primary_key: "id"
+      path: "/example"
+
+streams:
+  - "*ref(definitions.customers_stream)"
+
+check:
+  stream_names:
+    - "customers"
+
+spec:
+  documentationUrl: https://docsurl.com e
+  connectionSpecification:
+    $schema: http://json-schema.org/draft-07/schema#
+    title: Teamtailor Spec
+    type: object
+    required:
+      - access_token
+    additionalProperties: false
+    properties:
+      access_token:
+        type: string
+        description: >-
+          Access token to connect to Teamtailor. 
+          See https://docs.teamtailor.com/#authentication.
+          Multiple tokens can be specified, seperated with a ","
+        airbyte_secret: true
+        order: 1
