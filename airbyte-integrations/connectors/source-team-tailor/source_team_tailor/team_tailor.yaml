@@ -1,0 +1,59 @@
+version: "0.1.0"
+
+definitions:
+  selector:
+    extractor:
+      field_pointer: ["data"]
+  requester:
+    url_base: "https://api.teamtailor.com/v1"
+    http_method: "GET"
+    authenticator:
+      type: BearerAuthenticator
+      api_token: "{{ config['access_token'] }}"
+    request_options_provider:
+      request_headers:
+        X-Api-Version: "20220708"
+  retriever:
+    record_selector:
+      $ref: "*ref(definitions.selector)"
+    paginator:
+      type: NoPagination
+    requester:
+      $ref: "*ref(definitions.requester)"
+  base_stream:
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+  locations_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "locations"
+      primary_key: "id"
+      path: "/locations"
+  candidates_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "candidates"
+      primary_key: "id"
+      path: "/candidates"
+
+streams:
+  - "*ref(definitions.locations_stream)"
+  - "*ref(definitions.candidates_stream)"
+
+check:
+  stream_names:
+    - "locations"
+    - "candidates"
+
+spec:
+  documentation_url: https://docsurl.com
+  connection_specification:
+    title: Team Tailor Spec
+    type: object
+    required:
+      - access_token
+    additionalProperties: true
+    properties:
+      access_token:
+        type: string
+        description: API Key
