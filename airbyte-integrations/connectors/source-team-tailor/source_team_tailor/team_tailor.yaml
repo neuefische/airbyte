@@ -13,37 +13,95 @@ definitions:
     request_options_provider:
       request_headers:
         X-Api-Version: "20220708"
+    error_handler:
+      type: CompositeErrorHandler
+      # ignore 403 error but retry default retriable http errors (429, 500 - 600)
+      error_handlers:
+        - type: DefaultErrorHandler
+          response_filters:
+            - http_codes: [500]
+              action: IGNORE
+        - type: DefaultErrorHandler
   retriever:
     record_selector:
       $ref: "*ref(definitions.selector)"
     paginator:
-      type: NoPagination
+      type: "DefaultPaginator"
+      page_size_option:
+        inject_into: "request_parameter"
+        field_name: "page[size]"
+      pagination_strategy:
+        type: "PageIncrement"
+        page_size: 5
+      page_token_option:
+        inject_into: "request_parameter"
+        field_name: "page[number]"
+      url_base: "*ref(definitions.requester.url_base)"
     requester:
       $ref: "*ref(definitions.requester)"
   base_stream:
     retriever:
       $ref: "*ref(definitions.retriever)"
-  locations_stream:
-    $ref: "*ref(definitions.base_stream)"
-    $options:
-      name: "locations"
-      primary_key: "id"
-      path: "/locations"
   candidates_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
       name: "candidates"
       primary_key: "id"
       path: "/candidates"
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+      requester:
+        $ref: "*ref(definitions.requester)"
+        request_options_provider:
+            request_parameters:
+              include: "job-applications,custom-field-values"
+            request_headers:
+              X-Api-Version: "20220708"
+  job_applications_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "job-applications"
+      primary_key: "id"
+      path: "/job-applications"
+  jobs_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "jobs"
+      primary_key: "id"
+      path: "/jobs"
+  custom-fields-stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "custom-fields"
+      primary_key: "id"
+      path: "/custom-fields"
+  stages_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "stages"
+      primary_key: "id"
+      path: "/stages"
+  locations_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "locations"
+      primary_key: "id"
+      path: "/locations"
 
 streams:
-  - "*ref(definitions.locations_stream)"
   - "*ref(definitions.candidates_stream)"
+  - "*ref(definitions.job_applications_stream)"
+  - "*ref(definitions.jobs_stream)"
+  - "*ref(definitions.stages_stream)"
+  - "*ref(definitions.locations_stream)"
 
 check:
   stream_names:
-    - "locations"
     - "candidates"
+    - "job-applications"
+    - "jobs"
+    - "stages"
+    - "locations"
 
 spec:
   documentation_url: https://docsurl.com
