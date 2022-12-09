@@ -53,10 +53,10 @@ definitions:
       requester:
         $ref: "*ref(definitions.requester)"
         request_options_provider:
-            request_parameters:
-              include: "job-applications,custom-field-values"
-            request_headers:
-              $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
+          request_parameters:
+            include: "job-applications,custom-field-values"
+          request_headers:
+            $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
   job_applications_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
@@ -68,10 +68,10 @@ definitions:
       requester:
         $ref: "*ref(definitions.requester)"
         request_options_provider:
-            request_parameters:
-              include: "job,stage,reject-reason,candidate"
-            request_headers:
-              $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
+          request_parameters:
+            include: "job,stage,reject-reason,candidate"
+          request_headers:
+            $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
   jobs_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
