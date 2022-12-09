@@ -2,14 +2,14 @@
   "streams": [
     {
       "stream": {
-        "name": "candidates",
+        "name": "jobs",
         "json_schema": {},
         "supported_sync_modes": ["full_refresh"]
       },
       "sync_mode": "full_refresh",
       "destination_sync_mode": "overwrite"
     },
-    {
+        {
       "stream": {
         "name": "locations",
         "json_schema": {},
@@ -29,7 +29,7 @@
     },
     {
       "stream": {
-        "name": "jobs",
+        "name": "stages",
         "json_schema": {},
         "supported_sync_modes": ["full_refresh"]
       },
@@ -38,7 +38,43 @@
     },
     {
       "stream": {
-        "name": "stages",
+        "name": "candidates",
+        "json_schema": {},
+        "supported_sync_modes": ["full_refresh"]
+      },
+      "sync_mode": "full_refresh",
+      "destination_sync_mode": "overwrite"
+    },
+    {
+      "stream": {
+        "name": "custom-fields",
+        "json_schema": {},
+        "supported_sync_modes": ["full_refresh"]
+      },
+      "sync_mode": "full_refresh",
+      "destination_sync_mode": "overwrite"
+    },
+    {
+      "stream": {
+        "name": "custom-field-values",
+        "json_schema": {},
+        "supported_sync_modes": ["full_refresh"]
+      },
+      "sync_mode": "full_refresh",
+      "destination_sync_mode": "overwrite"
+    },
+    {
+      "stream": {
+        "name": "custom-field-selects",
+        "json_schema": {},
+        "supported_sync_modes": ["full_refresh"]
+      },
+      "sync_mode": "full_refresh",
+      "destination_sync_mode": "overwrite"
+    },
+    {
+      "stream": {
+        "name": "custom-field-options",
         "json_schema": {},
         "supported_sync_modes": ["full_refresh"]
       },

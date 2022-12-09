@@ -15,12 +15,13 @@ definitions:
         X-Api-Version: "20220708"
     error_handler:
       type: CompositeErrorHandler
-      # ignore 403 error but retry default retriable http errors (429, 500 - 600)
       error_handlers:
         - type: DefaultErrorHandler
           response_filters:
             - http_codes: [500]
               action: IGNORE
+            - http_codes: [ 429 ]
+              action: RETRY
         - type: DefaultErrorHandler
   retriever:
     record_selector:
@@ -57,6 +58,20 @@ definitions:
             include: "job-applications,custom-field-values"
           request_headers:
             $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
+      stream_slicer:
+        # TODO configure in specs
+        start_datetime: "2021-02-01T00:00:00.000+00:00"
+        end_datetime: "2023-03-01T00:00:00.000+00:00"
+        datetime_format: "%Y-%m-%dT%H:%M:%S.%f%z"
+        cursor_field: "{{ ['attributes']['updated-at'] }}"
+        step: "1d"
+        type: "DatetimeStreamSlicer"
+        start_time_option:
+          field_name: "filter[updated-at][from]"
+          inject_into: "request_parameter"
+        end_time_option:
+          field_name: "filter[updated-at][to]"
+          inject_into: "request_parameter"          
   job_applications_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
@@ -78,18 +93,17 @@ definitions:
       name: "jobs"
       primary_key: "id"
       path: "/jobs"
-  custom-fields-stream:
-    $ref: "*ref(definitions.base_stream)"
-    $options:
-      name: "custom-fields"
-      primary_key: "id"
-      path: "/custom-fields"
-  custom-field-values-stream:
-    $ref: "*ref(definitions.base_stream)"
-    $options:
-      name: "custom-field-values"
-      primary_key: "id"
-      path: "/custom-field-values"
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+      requester:
+        $ref: "*ref(definitions.requester)"
+        request_options_provider:
+          request_parameters:
+            include: "locations,stages,custom-fields,custom-field-values"
+            sort: "updated-at"
+            filter[status]: "all"
+          request_headers:
+            $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
   stages_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
@@ -102,6 +116,30 @@ definitions:
       name: "locations"
       primary_key: "id"
       path: "/locations"
+  custom-fields-stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "custom-fields"
+      primary_key: "id"
+      path: "/custom-fields"
+  custom-field-values-stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "custom-field-values"
+      primary_key: "id"
+      path: "/custom-field-values"
+  custom-field-selects-stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "custom-field-selects"
+      primary_key: "id"
+      path: "/custom-field-selects"
+  custom-field-options-stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "custom-field-options"
+      primary_key: "id"
+      path: "/custom-field-options"
 
 streams:
   - "*ref(definitions.candidates_stream)"
@@ -109,6 +147,10 @@ streams:
   - "*ref(definitions.jobs_stream)"
   - "*ref(definitions.stages_stream)"
   - "*ref(definitions.locations_stream)"
+  - "*ref(definitions.custom-fields-stream)"
+  - "*ref(definitions.custom-field-values-stream)"
+  - "*ref(definitions.custom-field-selects-stream)"
+  - "*ref(definitions.custom-field-options-stream)"
 
 check:
   stream_names:
@@ -130,3 +172,5 @@ spec:
       access_token:
         type: string
         description: API Key
+        airbyte_secret: true
+
