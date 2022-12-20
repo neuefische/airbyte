@@ -18,7 +18,7 @@ definitions:
       error_handlers:
         - type: DefaultErrorHandler
           response_filters:
-            - http_codes: [500]
+            - http_codes: [ 500 ]
               action: IGNORE
             - http_codes: [ 429 ]
               action: RETRY
@@ -43,6 +43,23 @@ definitions:
   base_stream:
     retriever:
       $ref: "*ref(definitions.retriever)"
+  base_incremental_stream:
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+      stream_slicer:
+        # TODO configure in specs
+        start_datetime: "2021-02-01T00:00:00.000+00:00"
+        end_datetime: "2023-03-01T00:00:00.000+00:00"
+        datetime_format: "%Y-%m-%dT%H:%M:%S.%f%z"
+        cursor_field: "{{ ['attributes']['updated-at'] }}"
+        step: "1d"
+        type: "DatetimeStreamSlicer"
+        start_time_option:
+          field_name: "filter[updated-at][from]"
+          inject_into: "request_parameter"
+        end_time_option:
+          field_name: "filter[updated-at][to]"
+          inject_into: "request_parameter"          
   candidates_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
@@ -58,20 +75,6 @@ definitions:
             include: "job-applications,custom-field-values"
           request_headers:
             $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
-      stream_slicer:
-        # TODO configure in specs
-        start_datetime: "2021-02-01T00:00:00.000+00:00"
-        end_datetime: "2023-03-01T00:00:00.000+00:00"
-        datetime_format: "%Y-%m-%dT%H:%M:%S.%f%z"
-        cursor_field: "{{ ['attributes']['updated-at'] }}"
-        step: "1d"
-        type: "DatetimeStreamSlicer"
-        start_time_option:
-          field_name: "filter[updated-at][from]"
-          inject_into: "request_parameter"
-        end_time_option:
-          field_name: "filter[updated-at][to]"
-          inject_into: "request_parameter"          
   job_applications_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
@@ -116,6 +119,21 @@ definitions:
       name: "locations"
       primary_key: "id"
       path: "/locations"
+  reject_reasons_stream:
+    $ref: "*ref(definitions.base_stream)"
+    $options:
+      name: "reject-reason"
+      primary_key: "id"
+      path: "/reject-reason"
+    retriever:
+      $ref: "*ref(definitions.retriever)"
+      requester:
+        $ref: "*ref(definitions.requester)"
+        request_options_provider:
+          request_parameters:
+            include: "job-applications"
+          request_headers:
+            $ref: "*ref(definitions.requester.request_options_provider.request_headers)"
   custom-fields-stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
@@ -146,6 +164,7 @@ streams:
   - "*ref(definitions.job_applications_stream)"
   - "*ref(definitions.jobs_stream)"
   - "*ref(definitions.stages_stream)"
+  - "*ref(definitions.reject_reasons_stream)"
   - "*ref(definitions.locations_stream)"
   - "*ref(definitions.custom-fields-stream)"
   - "*ref(definitions.custom-field-values-stream)"
@@ -158,10 +177,15 @@ check:
     - "job-applications"
     - "jobs"
     - "stages"
+    - "reject-reason"
     - "locations"
+    - "custom-fields"
+    - "custom-field-values"
+    - "custom-field-selects"
+    - "custom-field-options"
 
 spec:
-  documentation_url: https://docsurl.com
+  documentation_url: https://docs.airbyte.com/integrations/sources/source-team-tailor
   connection_specification:
     title: Team Tailor Spec
     type: object
