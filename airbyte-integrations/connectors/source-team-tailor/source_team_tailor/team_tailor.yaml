@@ -122,9 +122,9 @@ definitions:
   reject_reasons_stream:
     $ref: "*ref(definitions.base_stream)"
     $options:
-      name: "reject-reason"
+      name: "reject-reasons"
       primary_key: "id"
-      path: "/reject-reason"
+      path: "/reject-reasons"
     retriever:
       $ref: "*ref(definitions.retriever)"
       requester:
@@ -177,7 +177,7 @@ check:
     - "job-applications"
     - "jobs"
     - "stages"
-    - "reject-reason"
+    - "reject-reasons"
     - "locations"
     - "custom-fields"
     - "custom-field-values"
