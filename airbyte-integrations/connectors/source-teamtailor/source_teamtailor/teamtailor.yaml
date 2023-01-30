@@ -1,0 +1,1502 @@
+version: 0.1.0
+type: DeclarativeSource
+check:
+  type: CheckStream
+  stream_names: [locations]
+streams:
+  - type: DeclarativeStream
+    name: locations
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              address:
+                type:
+                  - "null"
+                  - string
+              city:
+                type: string
+              country:
+                type: string
+              email:
+                type: string
+              headquarters:
+                type: boolean
+              lat:
+                type: string
+              long:
+                type: string
+              name:
+                type: "null"
+              phone:
+                type:
+                  - "null"
+                  - string
+              zip:
+                type:
+                  - "null"
+                  - string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              teams:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: locations
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: locations
+        url_base: https://api.teamtailor.com/v1
+        path: locations
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters: {}
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: jobs
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              apply-button-text:
+                type: string
+              body:
+                type: string
+              cover-letter-requirement:
+                type: string
+              created-at:
+                type: string
+              currency:
+                type: "null"
+              employment-level:
+                type: string
+              employment-type:
+                type: string
+              end-date:
+                type: "null"
+              external-application-url:
+                type: "null"
+              human-status:
+                type: string
+              internal:
+                type: boolean
+              internal-name:
+                type: "null"
+              language-code:
+                type: "null"
+              mailbox:
+                type: string
+              max-salary:
+                type: "null"
+              min-salary:
+                type: "null"
+              name-requirement:
+                type: string
+              phone-requirement:
+                type: string
+              picture:
+                properties:
+                  original:
+                    type: string
+                  standard:
+                    type: string
+                  thumb:
+                    type: string
+                type: object
+              pinned:
+                type: boolean
+              pitch:
+                type: "null"
+              recruiter-email:
+                type: string
+              remote-status:
+                type: string
+              resume-requirement:
+                type: string
+              salary-time-unit:
+                type: string
+              sharing-image-layout:
+                type: string
+              start-date:
+                type: "null"
+              status:
+                type: string
+              tags:
+                type: array
+              title:
+                type: string
+              updated-at:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              careersite-job-apply-iframe-url:
+                type: string
+              careersite-job-apply-url:
+                type: string
+              careersite-job-internal-url:
+                type: string
+              careersite-job-url:
+                type: string
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              activities:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              candidates:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              colleagues:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              custom-field-values:
+                properties:
+                  data:
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              custom-fields:
+                properties:
+                  data:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                      type: object
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              department:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              location:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              locations:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              picked-questions:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              questions:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              regions:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              requisition:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              role:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              stages:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              team:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              team-memberships:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              user:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: jobs
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: jobs
+        url_base: https://api.teamtailor.com/v1
+        path: jobs
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: custom-fields,custom-field-values
+            filter[status]: all
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: custom-fields
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              api-name:
+                type: string
+              created-at:
+                type: string
+              field-type:
+                type: string
+              is-external:
+                type: boolean
+              is-featured:
+                type: boolean
+              is-hidden:
+                type: boolean
+              is-private:
+                type: boolean
+              is-required:
+                type: boolean
+              is-searchable:
+                type: boolean
+              name:
+                type: string
+              owner-type:
+                type: string
+              updated-at:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              custom-field-options:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              custom-field-values:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: custom-fields
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: custom-fields
+        url_base: https://api.teamtailor.com/v1
+        path: custom-fields
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters: {}
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: job-applications
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              changed-stage-at:
+                type: string
+              cover-letter:
+                type:
+                  - "null"
+                  - string
+              created-at:
+                type: string
+              referring-site:
+                type:
+                  - "null"
+                  - string
+              referring-url:
+                type:
+                  - "null"
+                  - string
+              rejected-at:
+                type: "null"
+              row-order:
+                type: integer
+              sourced:
+                type: boolean
+              updated-at:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              candidate:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              job:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              reject-reason:
+                properties:
+                  data:
+                    type: "null"
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              stage:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: job-applications
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: job-applications
+        url_base: https://api.teamtailor.com/v1
+        path: job-applications
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: job,stage,reject-reason,candidate
+            sort: updated-at
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: candidates
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              connected:
+                type: boolean
+              created-at:
+                type: string
+              email:
+                type: string
+              facebook-id:
+                type: "null"
+              facebook-profile:
+                type: "null"
+              first-name:
+                type:
+                  - "null"
+                  - string
+              internal:
+                type: boolean
+              last-name:
+                type:
+                  - "null"
+                  - string
+              linkedin-profile:
+                type:
+                  - "null"
+                  - string
+              linkedin-uid:
+                type:
+                  - "null"
+                  - string
+              linkedin-url:
+                type:
+                  - "null"
+                  - string
+              original-resume:
+                type:
+                  - "null"
+                  - string
+              phone:
+                type:
+                  - "null"
+                  - string
+              picture:
+                type:
+                  - "null"
+                  - string
+              pitch:
+                type:
+                  - "null"
+                  - string
+              referred:
+                type: boolean
+              referring-site:
+                type:
+                  - "null"
+                  - string
+              referring-url:
+                type:
+                  - "null"
+                  - string
+              restricted-at:
+                type: "null"
+              resume:
+                type:
+                  - "null"
+                  - string
+              sourced:
+                type: boolean
+              tags:
+                type: array
+              unsubscribed:
+                type: boolean
+              updated-at:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              activities:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              answers:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              custom-field-values:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              department:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              job-applications:
+                properties:
+                  data:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                      type: object
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              locations:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              partner-results:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              questions:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              regions:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              role:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              uploads:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: candidates
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: candidates
+        url_base: https://api.teamtailor.com/v1
+        path: candidates
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: job-applications
+            sort: updated-at
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: custom-field-values
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              field-type:
+                type: string
+              value:
+                anyOf:
+                  - type: string
+                  - items:
+                      type: string
+                    type: array
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              custom-field:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              owner:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: custom-field-values
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: custom-field-values
+        url_base: https://api.teamtailor.com/v1
+        path: custom-field-values
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: custom-field
+            filter[custom-field]: "{{ config['custom_field_filters'] }}"
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: custom-field-options
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              value:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              custom-field:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: custom-field-options
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: custom-field-options
+        url_base: https://api.teamtailor.com/v1
+        path: custom-field-options
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: custom-field
+            filter[custom-field]: "{{ config['custom_field_filters'] }}"
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: stages
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              active-job-applications-count:
+                type: integer
+              created-at:
+                type: string
+              name:
+                type: string
+              rejected-job-applications-count:
+                type: integer
+              row-order:
+                type: integer
+              stage-type:
+                type: string
+              updated-at:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              job:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              job-applications:
+                properties:
+                  data:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                      type: object
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              triggers:
+                properties:
+                  data:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                      type: object
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: stages
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: stages
+        url_base: https://api.teamtailor.com/v1
+        path: stages
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: job-applications,job,triggers
+            sort: updated-at
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: triggers
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              created-at:
+                type: string
+              data:
+                type: string
+              trigger-type:
+                type: string
+              updated-at:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              stage:
+                properties:
+                  data:
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    type: object
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: triggers
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: triggers
+        url_base: https://api.teamtailor.com/v1
+        path: triggers
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: stage
+            sort: updated-at
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+  - type: DeclarativeStream
+    name: departments
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        $schema: http://json-schema.org/schema#
+        properties:
+          attributes:
+            properties:
+              name:
+                type: string
+            type: object
+          id:
+            type: string
+          links:
+            properties:
+              self:
+                type: string
+            type: object
+          relationships:
+            properties:
+              manager:
+                properties:
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              roles:
+                properties:
+                  data:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                      type: object
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+              teams:
+                properties:
+                  data:
+                    type: array
+                  links:
+                    properties:
+                      related:
+                        type: string
+                      self:
+                        type: string
+                    type: object
+                type: object
+            type: object
+          type:
+            type: string
+        type: object
+    retriever:
+      type: SimpleRetriever
+      name: departments
+      primary_key:
+        - id
+      requester:
+        type: HttpRequester
+        name: departments
+        url_base: https://api.teamtailor.com/v1
+        path: departments
+        http_method: GET
+        request_options_provider:
+          type: InterpolatedRequestOptionsProvider
+          request_parameters:
+            include: roles,teams
+          request_headers:
+            X-Api-Version: "{{ config['x_api_version'] }}"
+          request_body_json: {}
+        authenticator:
+          type: BearerAuthenticator
+          api_token: "{{ config['api_key'] }}"
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_pointer:
+            - data
+      paginator:
+        type: DefaultPaginator
+        page_token_option:
+          type: RequestOption
+          inject_into: request_parameter
+          field_name: page[number]
+        page_size_option:
+          inject_into: request_parameter
+          type: RequestOption
+          field_name: page[size]
+        pagination_strategy:
+          type: PageIncrement
+          page_size: 5
+        url_base: https://api.teamtailor.com/v1
+spec:
+  connection_specification:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    required:
+      - api_key
+    properties:
+      x_api_version:
+        title: X-Api-Version
+        default: "20210218"
+        type: string
+      custom_field_filters:
+        title: custom-field-filters
+        description: >-
+          comma seperated ids of custom fields to filter for. Default is no
+          filter. no whitespaces
+        type: string
+      api_key:
+        type: string
+        title: API Key
+        airbyte_secret: true
+    additionalProperties: true
+  documentation_url: "https://docs.teamtailor.com/"
+  type: Spec
