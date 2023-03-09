@@ -1,0 +1,523 @@
+{
+  "title": "ModelItem",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "type": {
+      "title": "Type",
+      "type": "string"
+    },
+    "links": {
+      "$ref": "#/definitions/Links"
+    },
+    "attributes": {
+      "$ref": "#/definitions/Attributes"
+    },
+    "relationships": {
+      "$ref": "#/definitions/Relationships"
+    }
+  },
+  "required": ["id", "type", "links", "attributes", "relationships"],
+  "definitions": {
+    "Links": {
+      "title": "Links",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        }
+      },
+      "required": ["self"]
+    },
+    "Attributes": {
+      "title": "Attributes",
+      "type": "object",
+      "properties": {
+        "connected": {
+          "title": "Connected",
+          "type": "boolean"
+        },
+        "created-at": {
+          "title": "Created-At",
+          "type": "string"
+        },
+        "email": {
+          "title": "Email",
+          "type": "string"
+        },
+        "facebook-id": {
+          "title": "Facebook-Id"
+        },
+        "first-name": {
+          "title": "First-Name",
+          "type": "string"
+        },
+        "internal": {
+          "title": "Internal",
+          "type": "boolean"
+        },
+        "last-name": {
+          "title": "Last-Name",
+          "type": "string"
+        },
+        "linkedin-uid": {
+          "title": "Linkedin-Uid"
+        },
+        "linkedin-url": {
+          "title": "Linkedin-Url"
+        },
+        "original-resume": {
+          "title": "Original-Resume"
+        },
+        "phone": {
+          "title": "Phone",
+          "type": "string"
+        },
+        "picture": {
+          "title": "Picture"
+        },
+        "pitch": {
+          "title": "Pitch"
+        },
+        "referring-site": {
+          "title": "Referring-Site"
+        },
+        "referring-url": {
+          "title": "Referring-Url"
+        },
+        "referred": {
+          "title": "Referred",
+          "type": "boolean"
+        },
+        "resume": {
+          "title": "Resume"
+        },
+        "sourced": {
+          "title": "Sourced",
+          "type": "boolean"
+        },
+        "unsubscribed": {
+          "title": "Unsubscribed",
+          "type": "boolean"
+        },
+        "updated-at": {
+          "title": "Updated-At",
+          "type": "string"
+        },
+        "restricted-at": {
+          "title": "Restricted-At"
+        },
+        "facebook-profile": {
+          "title": "Facebook-Profile"
+        },
+        "linkedin-profile": {
+          "title": "Linkedin-Profile"
+        },
+        "tags": {
+          "title": "Tags",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "connected",
+        "created-at",
+        "email",
+        "facebook-id",
+        "first-name",
+        "internal",
+        "last-name",
+        "linkedin-uid",
+        "linkedin-url",
+        "original-resume",
+        "referring-site",
+        "referring-url",
+        "referred",
+        "sourced",
+        "unsubscribed",
+        "updated-at",
+        "restricted-at",
+        "facebook-profile",
+        "linkedin-profile",
+        "tags"
+      ]
+    },
+    "Links1": {
+      "title": "Links1",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Activities": {
+      "title": "Activities",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links1"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links2": {
+      "title": "Links2",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Department": {
+      "title": "Department",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links2"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links3": {
+      "title": "Links3",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Role": {
+      "title": "Role",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links3"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links4": {
+      "title": "Links4",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Regions": {
+      "title": "Regions",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links4"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links5": {
+      "title": "Links5",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Datum": {
+      "title": "Datum",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id"]
+    },
+    "JobApplications": {
+      "title": "JobApplications",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links5"
+        },
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Datum"
+          }
+        }
+      },
+      "required": ["links", "data"]
+    },
+    "Links6": {
+      "title": "Links6",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Questions": {
+      "title": "Questions",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links6"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links7": {
+      "title": "Links7",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Answers": {
+      "title": "Answers",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links7"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links8": {
+      "title": "Links8",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Locations": {
+      "title": "Locations",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links8"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links9": {
+      "title": "Links9",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Uploads": {
+      "title": "Uploads",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links9"
+        }
+      },
+      "required": ["links"]
+    },
+    "Links10": {
+      "title": "Links10",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "Datum1": {
+      "title": "Datum1",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id"]
+    },
+    "CustomFieldValues": {
+      "title": "CustomFieldValues",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links10"
+        },
+        "data": {
+          "title": "Data",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Datum1"
+          }
+        }
+      },
+      "required": ["links", "data"]
+    },
+    "Links11": {
+      "title": "Links11",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "PartnerResults": {
+      "title": "PartnerResults",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links11"
+        }
+      },
+      "required": ["links"]
+    },
+    "Relationships": {
+      "title": "Relationships",
+      "type": "object",
+      "properties": {
+        "activities": {
+          "$ref": "#/definitions/Activities"
+        },
+        "department": {
+          "$ref": "#/definitions/Department"
+        },
+        "role": {
+          "$ref": "#/definitions/Role"
+        },
+        "regions": {
+          "$ref": "#/definitions/Regions"
+        },
+        "job-applications": {
+          "$ref": "#/definitions/JobApplications"
+        },
+        "questions": {
+          "$ref": "#/definitions/Questions"
+        },
+        "answers": {
+          "$ref": "#/definitions/Answers"
+        },
+        "locations": {
+          "$ref": "#/definitions/Locations"
+        },
+        "uploads": {
+          "$ref": "#/definitions/Uploads"
+        },
+        "custom-field-values": {
+          "$ref": "#/definitions/CustomFieldValues"
+        },
+        "partner-results": {
+          "$ref": "#/definitions/PartnerResults"
+        }
+      },
+      "required": [
+        "activities",
+        "department",
+        "role",
+        "regions",
+        "job-applications",
+        "questions",
+        "answers",
+        "locations",
+        "uploads",
+        "custom-field-values",
+        "partner-results"
+      ]
+    }
+  }
+}

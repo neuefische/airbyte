@@ -1,0 +1,83 @@
+{
+  "title": "Datum",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "type": {
+      "title": "Type",
+      "type": "string"
+    },
+    "links": {
+      "$ref": "#/definitions/Links"
+    },
+    "attributes": {
+      "$ref": "#/definitions/Attributes"
+    },
+    "relationships": {
+      "$ref": "#/definitions/Relationships"
+    }
+  },
+  "required": ["id", "type", "links", "attributes", "relationships"],
+  "definitions": {
+    "Links": {
+      "title": "Links",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        }
+      },
+      "required": ["self"]
+    },
+    "Attributes": {
+      "title": "Attributes",
+      "type": "object",
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": ["value"]
+    },
+    "Links1": {
+      "title": "Links1",
+      "type": "object",
+      "properties": {
+        "self": {
+          "title": "Self",
+          "type": "string"
+        },
+        "related": {
+          "title": "Related",
+          "type": "string"
+        }
+      },
+      "required": ["self", "related"]
+    },
+    "CustomField": {
+      "title": "CustomField",
+      "type": "object",
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Links1"
+        }
+      },
+      "required": ["links"]
+    },
+    "Relationships": {
+      "title": "Relationships",
+      "type": "object",
+      "properties": {
+        "custom-field": {
+          "$ref": "#/definitions/CustomField"
+        }
+      },
+      "required": ["custom-field"]
+    }
+  }
+}
